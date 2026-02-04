@@ -3,21 +3,19 @@
 import { useState } from "react";
 
 export default function ValentineCard() {
-  const [name, setName] = useState("");
-  const [showConfession, setShowConfession] = useState(false);
   const [yesClicked, setYesClicked] = useState(false);
   const [noPopup, setNoPopup] = useState(false);
+  const [noButtonPos, setNoButtonPos] = useState({ x: 0, y: 0 });
+  const name = "Prai";
 
   const handleYes = () => {
     setYesClicked(true);
-    // Trigger confetti
     triggerConfetti();
   };
 
   const triggerConfetti = () => {
     if (typeof window === "undefined") return;
 
-    // Create confetti pieces
     for (let i = 0; i < 100; i++) {
       const confettiPiece = document.createElement("div");
       confettiPiece.style.position = "fixed";
@@ -64,39 +62,18 @@ export default function ValentineCard() {
 
   const handleNo = () => {
     setNoPopup(true);
-    setTimeout(() => setNoPopup(false), 3000);
+    setNoButtonPos({
+      x: (Math.random() - 0.5) * 200,
+      y: (Math.random() - 0.5) * 200,
+    });
+    setTimeout(() => setNoPopup(false), 2000);
   };
 
   return (
     <div className="min-h-screen bg-linear-to-br from-pink-200 via-red-100 to-pink-300 flex items-center justify-center p-4">
       {/* Main Card */}
       <div className="max-w-md w-full">
-        {!showConfession ? (
-          // Name Input Screen
-          <div className="bg-white rounded-3xl shadow-2xl p-8 text-center animate-bounce-in">
-            <div className="text-5xl mb-6">💕</div>
-            <h1 className="text-2xl font-bold text-pink-600 mb-4">
-              Valentine&apos;s Day
-            </h1>
-            <p className="text-gray-600 mb-6">
-              Enter your name to start the magic ✨
-            </p>
-            <input
-              type="text"
-              placeholder="Your name..."
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-pink-300 rounded-2xl focus:outline-none focus:border-pink-500 mb-4 text-center font-semibold"
-            />
-            <button
-              onClick={() => name.trim() && setShowConfession(true)}
-              disabled={!name.trim()}
-              className="w-full bg-linear-to-r from-pink-500 to-red-500 text-white font-bold py-3 px-4 rounded-2xl hover:shadow-lg transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Continue 💝
-            </button>
-          </div>
-        ) : !yesClicked ? (
+        {!yesClicked ? (
           // Valentine Question Screen
           <div className="bg-white rounded-3xl shadow-2xl p-8 text-center animate-fade-in">
             <div className="text-6xl mb-6 animate-pulse">💘</div>
@@ -112,7 +89,7 @@ export default function ValentineCard() {
               </div>
             )}
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 relative">
               <button
                 onClick={handleYes}
                 className="flex-1 bg-linear-to-r from-green-400 to-green-500 text-white font-bold py-4 px-4 rounded-2xl hover:shadow-lg transition transform hover:scale-110 text-xl"
@@ -121,8 +98,11 @@ export default function ValentineCard() {
               </button>
               <button
                 onClick={handleNo}
-                className="flex-1 bg-linear-to-r from-gray-400 to-gray-500 text-white font-bold py-4 px-4 rounded-2xl hover:shadow-lg transition transform hover:scale-105 text-xl cursor-not-allowed opacity-70"
-                disabled
+                style={{
+                  transform: `translate(${noButtonPos.x}px, ${noButtonPos.y}px)`,
+                  transition: "transform 0.3s ease-out",
+                }}
+                className="flex-1 bg-linear-to-r from-gray-400 to-gray-500 text-white font-bold py-4 px-4 rounded-2xl hover:shadow-lg transition text-xl"
               >
                 No ❌
               </button>
@@ -143,8 +123,6 @@ export default function ValentineCard() {
             <button
               onClick={() => {
                 setYesClicked(false);
-                setShowConfession(false);
-                setName("");
               }}
               className="w-full bg-linear-to-r from-pink-500 to-red-500 text-white font-bold py-3 px-4 rounded-2xl hover:shadow-lg transition transform hover:scale-105"
             >
